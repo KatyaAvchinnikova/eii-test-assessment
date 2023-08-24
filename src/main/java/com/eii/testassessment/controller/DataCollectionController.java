@@ -23,11 +23,11 @@ public class DataCollectionController {
     @PostMapping()
     public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionCreateDto dataCollectionCreateDto) {
 
-            dataFileService.validateDataFiles(dataCollectionCreateDto);
-            dataCollectionService.save(dataCollectionCreateDto);
-            log.info("Data collection was created successfully");
+        dataFileService.validateDataFiles(dataCollectionCreateDto);
+        dataCollectionService.save(dataCollectionCreateDto);
+        log.info("Data collection was created successfully");
 
-            return new ResponseEntity<>("Data collection was created successfully.", HttpStatus.CREATED);
+        return new ResponseEntity<>("Data collection was created successfully.", HttpStatus.CREATED);
     }
 
     @GetMapping()
@@ -52,5 +52,11 @@ public class DataCollectionController {
         dataFileService.validateDataFiles(dataCollectionDto);
         dataCollectionService.update(id, dataCollectionDto);
         return new ResponseEntity<>("Data collection was updated successfully.", HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteDataCollectionById(@PathVariable("id") int id) {
+        dataCollectionService.deleteById(id);
+        return new ResponseEntity<>("Data collection was deleted successfully.", HttpStatus.OK);
     }
 }

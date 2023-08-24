@@ -12,7 +12,5 @@ public interface DataCollectionRepository {
 
     DataCollectionDto findById(Integer id);
 
-    int deleteById(Integer id);
-
     List<DataCollectionDto> findAll();
 }

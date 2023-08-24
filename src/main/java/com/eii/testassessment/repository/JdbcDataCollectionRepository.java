@@ -68,21 +68,15 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
                 "tag, " +
                 "note " +
                 "FROM eii_test.data_collections " +
-                "WHERE id = :id";
+                "WHERE id = :id AND status != 'DELETED'";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
         try {
-            DataCollectionDto dataCollectionDto = jdbcTemplate.queryForObject(sql, parameters, dataCollectionRowMapper);
-            return dataCollectionDto;
+            return jdbcTemplate.queryForObject(sql, parameters, dataCollectionRowMapper);
         } catch (RuntimeException ex) {
             throw new ResourceNotFoundException("Data collection", "id", id);
         }
-    }
-
-    @Override
-    public int deleteById(Integer id) {
-        return 0;
     }
 
     @Override
@@ -96,7 +90,8 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
                 "status, " +
                 "tag, " +
                 "note " +
-                "FROM eii_test.data_collections";
+                "FROM eii_test.data_collections " +
+                "WHERE status != 'DELETED'";
 
         return new ArrayList<>(jdbcTemplate.query(sql, new MapSqlParameterSource(), dataCollectionRowMapper));
     }

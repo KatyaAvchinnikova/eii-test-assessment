@@ -13,4 +13,6 @@ public interface DataCollectionService {
     DataCollectionDto findById(Integer id);
 
     void update(int id, DataCollectionCreateDto dataCollectionDto);
+
+    void deleteById(int id);
 }

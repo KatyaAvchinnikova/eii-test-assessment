@@ -35,13 +35,20 @@ public class DataCollectionServiceImpl implements DataCollectionService {
         DataCollectionDto dto = dataCollectionRepository.findById(id);
         dto.setFileIdAssets(dataCollectionDto.getFileIdAssets());
         dto.setFileIdInventory(dataCollectionDto.getFileIdInventory());
-        dto.setFileIdOrders(dataCollectionDto.getFileIdAssets());
+        dto.setFileIdOrders(dataCollectionDto.getFileIdOrders());
         dto.setNote(dataCollectionDto.getNote());
         dto.setTag(dataCollectionDto.getTag());
         dto.setStatus(dataCollectionDto.getStatus());
         dto.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
 
         dataCollectionRepository.update(dto);
+    }
 
+    @Override
+    public void deleteById(int id) {
+        DataCollectionDto dto = dataCollectionRepository.findById(id);
+        dto.setStatus("DELETED");
+
+        dataCollectionRepository.update(dto);
     }
 }
