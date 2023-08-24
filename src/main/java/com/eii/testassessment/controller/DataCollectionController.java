@@ -40,4 +40,10 @@ public class DataCollectionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DataCollectionDto> getDataCollectionById(@PathVariable Integer id) {
+        DataCollectionDto dataCollections = dataCollectionService.findById(id);
+        return new ResponseEntity<>(dataCollections, HttpStatus.OK);
+    }
 }

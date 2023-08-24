@@ -39,7 +39,21 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
 
     @Override
     public DataCollectionDto findById(Integer id) {
-        return null;
+        String sql = "SELECT id, " +
+                "created_on, " +
+                "updated_on, " +
+                "file_id_orders, " +
+                "file_id_assets, " +
+                "file_id_inventory, " +
+                "status, " +
+                "tag, " +
+                "note " +
+                "FROM eii_test.data_collections " +
+                "WHERE id = :id";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource("id", id);
+
+        return jdbcTemplate.queryForObject(sql, parameters, dataCollectionRowMapper);
     }
 
     @Override

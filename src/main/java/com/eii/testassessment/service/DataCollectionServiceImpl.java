@@ -25,7 +25,7 @@ public class DataCollectionServiceImpl implements DataCollectionService {
 
     @Override
     public DataCollectionDto findById(Integer id) {
-        return null;
+        return dataCollectionRepository.findById(id);
     }
 
     @Override
