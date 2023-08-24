@@ -1,0 +1,9 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    username: postgres
+    password: pass123
+    url: jdbc:postgresql://localhost:5433/eii_test
+    driver-class-name: org.postgresql.Driver
