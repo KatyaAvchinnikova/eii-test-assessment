@@ -24,11 +24,11 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
                 "VALUES (:file_id_orders, :file_id_asserts, :file_id_inventory, :status, :tag, :note)";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollectionDto.getFileIdOrders());
-        parameters.addValue("file_id_asserts", dataCollectionDto.getFileIdAssets());
-        parameters.addValue("file_id_inventory", dataCollectionDto.getFileIdInventory());
-        parameters.addValue("status", dataCollectionDto.getStatus());
-        parameters.addValue("tag", dataCollectionDto.getTag());
-        parameters.addValue("note", dataCollectionDto.getTag());
+        parameters.addValue("file_id_asserts",      dataCollectionDto.getFileIdAssets());
+        parameters.addValue("file_id_inventory",    dataCollectionDto.getFileIdInventory());
+        parameters.addValue("status",               dataCollectionDto.getStatus());
+        parameters.addValue("tag",                  dataCollectionDto.getTag());
+        parameters.addValue("note",                 dataCollectionDto.getTag());
 
         return jdbcTemplate.update(sql, parameters);
     }
