@@ -24,11 +24,9 @@ public class DataCollectionController {
 
     @PostMapping()
     public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionCreateDto dataCollectionCreateDto) {
-
         dataFileService.validateDataFiles(dataCollectionCreateDto);
         dataCollectionService.save(dataCollectionCreateDto);
         log.info("Data collection was created successfully");
-
         return new ResponseEntity<>("Data collection was created successfully.", HttpStatus.CREATED);
     }
 
@@ -37,8 +35,10 @@ public class DataCollectionController {
         List<DataCollectionDto> dataCollections = dataCollectionService.findAll(params);
 
         if (dataCollections.size() != 0) {
+            log.info("Data collections found, sending response with status OK.");
             return new ResponseEntity<>(dataCollections, HttpStatus.OK);
         } else {
+            log.warn("No data collections found, sending response with status NOT_FOUND.");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
