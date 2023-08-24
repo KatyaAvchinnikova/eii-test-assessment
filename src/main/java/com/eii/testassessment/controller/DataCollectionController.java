@@ -46,4 +46,10 @@ public class DataCollectionController {
         DataCollectionDto dataCollections = dataCollectionService.findById(id);
         return new ResponseEntity<>(dataCollections, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> updateTutorial(@PathVariable("id") int id, @RequestBody DataCollectionCreateDto dataCollectionDto) {
+        dataCollectionService.update(id, dataCollectionDto);
+        return new ResponseEntity<>("Data collection was updated successfully.", HttpStatus.OK);
+    }
 }

@@ -35,7 +35,25 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
 
     @Override
     public int update(DataCollectionDto dataCollectionDto) {
-        return 0;
+        String sql = "UPDATE eii_test.data_collections SET file_id_orders = :file_id_orders, " +
+                "file_id_assets = file_id_assets, " +
+                "file_id_inventory=:file_id_inventory, " +
+                "status = :status, " +
+                "tag = :tag, " +
+                "note = :note, " +
+                "updated_on = :updated_on " +
+                "WHERE id=:id";
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollectionDto.getFileIdOrders());
+        parameters.addValue("file_id_asserts",      dataCollectionDto.getFileIdAssets());
+        parameters.addValue("file_id_inventory",    dataCollectionDto.getFileIdInventory());
+        parameters.addValue("status",               dataCollectionDto.getStatus());
+        parameters.addValue("tag",                  dataCollectionDto.getTag());
+        parameters.addValue("note",                 dataCollectionDto.getNote());
+        parameters.addValue("id",                   dataCollectionDto.getId());
+        parameters.addValue("updated_on",           dataCollectionDto.getUpdatedOn());
+
+        return jdbcTemplate.update(sql, parameters);
     }
 
     @Override
