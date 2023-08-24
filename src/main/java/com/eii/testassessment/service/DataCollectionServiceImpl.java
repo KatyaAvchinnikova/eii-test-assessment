@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -21,8 +22,8 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     }
 
     @Override
-    public List<DataCollectionDto> findAll() {
-        return dataCollectionRepository.findAll();
+    public List<DataCollectionDto> findAll(Map<String, String> params) {
+        return dataCollectionRepository.findAll(params);
     }
 
     @Override
@@ -40,7 +41,6 @@ public class DataCollectionServiceImpl implements DataCollectionService {
         dto.setTag(dataCollectionDto.getTag());
         dto.setStatus(dataCollectionDto.getStatus());
         dto.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-
         dataCollectionRepository.update(dto);
     }
 
@@ -48,7 +48,6 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     public void deleteById(int id) {
         DataCollectionDto dto = dataCollectionRepository.findById(id);
         dto.setStatus("DELETED");
-
         dataCollectionRepository.update(dto);
     }
 }

@@ -4,6 +4,7 @@ import com.eii.testassessment.dto.DataCollectionCreateDto;
 import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.service.DataCollectionService;
 import com.eii.testassessment.service.DataFileService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/data-collections")
@@ -31,8 +33,8 @@ public class DataCollectionController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<DataCollectionDto>> getDataCollections() {
-        List<DataCollectionDto> dataCollections = dataCollectionService.findAll();
+    public ResponseEntity<List<DataCollectionDto>> getDataCollections(@RequestParam(required = false) Map<String, String> params) throws JsonProcessingException {
+        List<DataCollectionDto> dataCollections = dataCollectionService.findAll(params);
 
         if (dataCollections.size() != 0) {
             return new ResponseEntity<>(dataCollections, HttpStatus.OK);

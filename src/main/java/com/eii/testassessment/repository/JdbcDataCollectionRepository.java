@@ -9,8 +9,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @RequiredArgsConstructor
@@ -80,7 +80,7 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
     }
 
     @Override
-    public List<DataCollectionDto> findAll() {
+    public List<DataCollectionDto> findAll(Map<String, String> params) {
         String sql = "SELECT id, " +
                 "created_on, " +
                 "updated_on, " +
@@ -93,8 +93,18 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
                 "FROM eii_test.data_collections " +
                 "WHERE status != 'DELETED'";
 
-        return new ArrayList<>(jdbcTemplate.query(sql, new MapSqlParameterSource(), dataCollectionRowMapper));
+        if (params.containsKey("filter")) {
+            String[] filterParts = params.get("filter").split(",");
+            if ("subset".equals(filterParts[1].split(":")[1])) {
+                sql += " AND " + filterParts[0].split(":")[1] + " LIKE '%" + filterParts[2].split(":")[1] + "%' ";
+            }
+        }
+
+        if (params.containsKey("sort")) {
+            String[] sortParts = params.get("sort").split(",");
+            sql += "ORDER BY " + sortParts[0].split(":")[1] + " " + sortParts[1].split(":")[1];
+        }
+
+        return jdbcTemplate.query(sql, new MapSqlParameterSource(), dataCollectionRowMapper);
     }
-
-
 }
