@@ -2,6 +2,7 @@ package com.eii.testassessment.repository;
 
 import com.eii.testassessment.dto.DataCollectionCreateDto;
 import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.exception.ResourceNotFoundException;
 import com.eii.testassessment.mapper.DataCollectionRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -53,7 +54,12 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
 
         MapSqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
-        return jdbcTemplate.queryForObject(sql, parameters, dataCollectionRowMapper);
+        try {
+            DataCollectionDto dataCollectionDto = jdbcTemplate.queryForObject(sql, parameters, dataCollectionRowMapper);
+            return dataCollectionDto;
+        } catch (RuntimeException ex) {
+            throw new ResourceNotFoundException("Data collection", "id", id);
+        }
     }
 
     @Override
