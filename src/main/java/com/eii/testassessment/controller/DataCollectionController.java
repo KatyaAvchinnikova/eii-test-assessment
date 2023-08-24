@@ -3,6 +3,7 @@ package com.eii.testassessment.controller;
 import com.eii.testassessment.dto.DataCollectionCreateDto;
 import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.service.DataCollectionService;
+import com.eii.testassessment.service.DataFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,17 +18,16 @@ import java.util.List;
 @Slf4j
 public class DataCollectionController {
     private final DataCollectionService dataCollectionService;
+    private final DataFileService dataFileService;
 
     @PostMapping()
     public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionCreateDto dataCollectionCreateDto) {
-        try {
+
+            dataFileService.validateDataFiles(dataCollectionCreateDto);
             dataCollectionService.save(dataCollectionCreateDto);
             log.info("Data collection was created successfully");
+
             return new ResponseEntity<>("Data collection was created successfully.", HttpStatus.CREATED);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
     }
 
     @GetMapping()
@@ -48,7 +48,8 @@ public class DataCollectionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateTutorial(@PathVariable("id") int id, @RequestBody DataCollectionCreateDto dataCollectionDto) {
+    public ResponseEntity<String> updateDataCollection(@PathVariable("id") int id, @RequestBody DataCollectionCreateDto dataCollectionDto) {
+        dataFileService.validateDataFiles(dataCollectionDto);
         dataCollectionService.update(id, dataCollectionDto);
         return new ResponseEntity<>("Data collection was updated successfully.", HttpStatus.OK);
     }
