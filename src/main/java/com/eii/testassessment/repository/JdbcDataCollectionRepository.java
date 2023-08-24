@@ -2,17 +2,20 @@ package com.eii.testassessment.repository;
 
 import com.eii.testassessment.dto.DataCollectionCreateDto;
 import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.mapper.DataCollectionRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcDataCollectionRepository implements DataCollectionRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
+    private final DataCollectionRowMapper dataCollectionRowMapper;
 
     @Override
     public int save(DataCollectionCreateDto dataCollectionDto) {
@@ -46,6 +49,17 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
 
     @Override
     public List<DataCollectionDto> findAll() {
-        return null;
+        String sql = "SELECT id, " +
+                "created_on, " +
+                "updated_on, " +
+                "file_id_orders, " +
+                "file_id_assets, " +
+                "file_id_inventory, " +
+                "status, " +
+                "tag, " +
+                "note " +
+                "FROM eii_test.data_collections";
+
+        return new ArrayList<>(jdbcTemplate.query(sql, new MapSqlParameterSource(), dataCollectionRowMapper));
     }
 }

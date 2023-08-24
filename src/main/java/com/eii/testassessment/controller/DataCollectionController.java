@@ -1,15 +1,15 @@
 package com.eii.testassessment.controller;
 
 import com.eii.testassessment.dto.DataCollectionCreateDto;
+import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.service.DataCollectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/data-collections")
@@ -27,6 +27,17 @@ public class DataCollectionController {
         } catch (Exception e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<DataCollectionDto>> getDataCollections() {
+        List<DataCollectionDto> dataCollections = dataCollectionService.findAll();
+
+        if (dataCollections.size() != 0) {
+            return new ResponseEntity<>(dataCollections, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -20,7 +20,7 @@ public class DataCollectionServiceImpl implements DataCollectionService {
 
     @Override
     public List<DataCollectionDto> findAll() {
-        return null;
+        return dataCollectionRepository.findAll();
     }
 
     @Override
