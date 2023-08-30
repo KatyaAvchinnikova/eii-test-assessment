@@ -1,7 +1,7 @@
 package com.eii.testassessment.controller;
 
 import com.eii.testassessment.dto.DataCollectionRequestDto;
-import com.eii.testassessment.model.DataCollection;
+import com.eii.testassessment.dto.DataCollectionResponseDto;
 import com.eii.testassessment.service.DataCollectionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,8 +27,8 @@ public class DataCollectionController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<DataCollection>> getDataCollections(@RequestParam(required = false) Map<String, String> params) {
-        List<DataCollection> dataCollections = dataCollectionService.findAll(params);
+    public ResponseEntity<List<DataCollectionResponseDto>> getDataCollections(@RequestParam(required = false) Map<String, String> params) {
+        List<DataCollectionResponseDto> dataCollections = dataCollectionService.findAll(params);
 
         if (dataCollections.size() != 0) {
             log.info("Data collections found, sending response with status OK.");
@@ -40,8 +40,8 @@ public class DataCollectionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataCollection> getDataCollectionById(@PathVariable Integer id) {
-        DataCollection dataCollections = dataCollectionService.findById(id);
+    public ResponseEntity<DataCollectionResponseDto> getDataCollectionById(@PathVariable Integer id) {
+        DataCollectionResponseDto dataCollections = dataCollectionService.findById(id);
         return new ResponseEntity<>(dataCollections, HttpStatus.OK);
     }
 

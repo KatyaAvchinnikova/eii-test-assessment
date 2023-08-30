@@ -1,6 +1,8 @@
 package com.eii.testassessment.service;
 
 import com.eii.testassessment.dto.DataCollectionRequestDto;
+import com.eii.testassessment.dto.DataCollectionResponseDto;
+import com.eii.testassessment.mapper.DataCollectionMapper;
 import com.eii.testassessment.model.DataCollection;
 import com.eii.testassessment.model.DataFile;
 import com.eii.testassessment.repository.DataCollectionRepository;
@@ -13,6 +15,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +23,7 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     private final DataCollectionRepository dataCollectionRepository;
     private final DataFileService dataFileService;
     private final DataFileRepository dataFileRepository;
+    private final DataCollectionMapper dataCollectionMapper;
 
     @Override
     @Transactional
@@ -31,14 +35,17 @@ public class DataCollectionServiceImpl implements DataCollectionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DataCollection> findAll(Map<String, String> params) {
-        return dataCollectionRepository.findAll(params);
+    public List<DataCollectionResponseDto> findAll(Map<String, String> params) {
+        List<DataCollection> dataCollections = dataCollectionRepository.findAll(params);
+        return dataCollections.stream()
+                              .map(dataCollectionMapper::toDto)
+                              .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public DataCollection findById(Integer id) {
-        return dataCollectionRepository.findById(id);
+    public DataCollectionResponseDto findById(Integer id) {
+        return dataCollectionMapper.toDto(dataCollectionRepository.findById(id));
     }
 
     @Override
