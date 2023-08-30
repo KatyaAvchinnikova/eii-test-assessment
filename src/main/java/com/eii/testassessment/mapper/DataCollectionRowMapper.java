@@ -19,7 +19,6 @@ public class DataCollectionRowMapper implements RowMapper<DataCollection> {
         dataCollection.setNote(rs.getString("note"));
         dataCollection.setTag(rs.getString("tag"));
         dataCollection.setStatus(rs.getString("status"));
-
         return dataCollection;
     }
 }

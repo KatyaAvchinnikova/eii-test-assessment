@@ -65,7 +65,6 @@ public class DataCollectionServiceImpl implements DataCollectionService {
         dto.setTag(dataCollectionDto.getTag());
         dto.setStatus(dataCollectionDto.getStatus());
         dto.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-
         return dto;
     }
 }

@@ -29,7 +29,6 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
         parameters.addValue("status", dataCollectionDto.getStatus());
         parameters.addValue("tag", dataCollectionDto.getTag());
         parameters.addValue("note", dataCollectionDto.getTag());
-
         return jdbcTemplate.update(sql, parameters);
     }
 
@@ -51,7 +50,6 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
         parameters.addValue("note", dataCollection.getNote());
         parameters.addValue("id", dataCollection.getId());
         parameters.addValue("updated_on", dataCollection.getUpdatedOn());
-
         return jdbcTemplate.update(sql, parameters);
     }
 
@@ -103,7 +101,6 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
             String[] sortParts = params.get("sort").split(",");
             sql += "ORDER BY " + sortParts[0].split(":")[1] + " " + sortParts[1].split(":")[1];
         }
-
         return jdbcTemplate.query(sql, dataCollectionRowMapper);
     }
 

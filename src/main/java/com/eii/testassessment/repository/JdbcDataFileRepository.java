@@ -21,7 +21,6 @@ public class JdbcDataFileRepository implements DataFileRepository {
                 "FROM eii_test.data_files " +
                 "WHERE id in (:ids)";
         MapSqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
-
         return jdbcTemplate.query(sql, parameters, dataFileRowMapper);
     }
 }

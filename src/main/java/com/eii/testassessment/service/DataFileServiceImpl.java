@@ -2,7 +2,6 @@ package com.eii.testassessment.service;
 
 import com.eii.testassessment.exception.ValidationException;
 import com.eii.testassessment.model.DataFile;
-import com.eii.testassessment.repository.DataFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +11,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class DataFileServiceImpl implements DataFileService {
-    private final DataFileRepository dataFileRepository;
-
     @Override
     public void validateDataFiles(List<DataFile> dataFiles) {
         List<String> messages = new ArrayList<>();

@@ -17,7 +17,6 @@ public class DataFileRowMapper implements RowMapper<DataFile> {
         dataFile.setType(rs.getString("file_type"));
         dataFile.setCreatedOn(rs.getTimestamp("created_on"));
         dataFile.setCreatedOn(rs.getTimestamp("updated_on"));
-
         return dataFile;
     }
 }
