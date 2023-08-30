@@ -1,9 +1,10 @@
 package com.eii.testassessment.repository;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
-import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.dto.DataCollectionRequestDto;
 import com.eii.testassessment.exception.ResourceNotFoundException;
 import com.eii.testassessment.mapper.DataCollectionRowMapper;
+import com.eii.testassessment.model.DataCollection;
+import com.eii.testassessment.model.DataFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,56 +20,62 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
     private final DataCollectionRowMapper dataCollectionRowMapper;
 
     @Override
-    public int save(DataCollectionCreateDto dataCollectionDto) {
+    public int save(DataCollectionRequestDto dataCollectionDto, List<DataFile> dataFiles) {
         String sql = "INSERT INTO eii_test.data_collections (file_id_orders, file_id_assets, file_id_inventory, status, tag, note) " +
-                "VALUES (:file_id_orders, :file_id_asserts, :file_id_inventory, :status, :tag, :note)";
+                "VALUES (:file_id_orders, :file_id_assets, :file_id_inventory, :status, :tag, :note)";
 
-        MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollectionDto.getFileIdOrders());
-        parameters.addValue("file_id_asserts",      dataCollectionDto.getFileIdAssets());
-        parameters.addValue("file_id_inventory",    dataCollectionDto.getFileIdInventory());
-        parameters.addValue("status",               dataCollectionDto.getStatus());
-        parameters.addValue("tag",                  dataCollectionDto.getTag());
-        parameters.addValue("note",                 dataCollectionDto.getTag());
-
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        putFileIdParameters(dataFiles, parameters);
+        parameters.addValue("status", dataCollectionDto.getStatus());
+        parameters.addValue("tag", dataCollectionDto.getTag());
+        parameters.addValue("note", dataCollectionDto.getTag());
         return jdbcTemplate.update(sql, parameters);
     }
 
     @Override
-    public int update(DataCollectionDto dataCollectionDto) {
+    public int update(DataCollection dataCollection) {
         String sql = "UPDATE eii_test.data_collections SET file_id_orders = :file_id_orders, " +
-                "file_id_assets = file_id_assets, " +
-                "file_id_inventory=:file_id_inventory, " +
+                "file_id_assets = :file_id_assets, " +
+                "file_id_inventory = :file_id_inventory, " +
                 "status = :status, " +
                 "tag = :tag, " +
                 "note = :note, " +
                 "updated_on = :updated_on " +
-                "WHERE id=:id";
+                "WHERE id = :id";
 
-        MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollectionDto.getFileIdOrders());
-        parameters.addValue("file_id_asserts",      dataCollectionDto.getFileIdAssets());
-        parameters.addValue("file_id_inventory",    dataCollectionDto.getFileIdInventory());
-        parameters.addValue("status",               dataCollectionDto.getStatus());
-        parameters.addValue("tag",                  dataCollectionDto.getTag());
-        parameters.addValue("note",                 dataCollectionDto.getNote());
-        parameters.addValue("id",                   dataCollectionDto.getId());
-        parameters.addValue("updated_on",           dataCollectionDto.getUpdatedOn());
-
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        putFileIdParameters(dataCollection.getDataFileList(), parameters);
+        parameters.addValue("status", dataCollection.getStatus());
+        parameters.addValue("tag", dataCollection.getTag());
+        parameters.addValue("note", dataCollection.getNote());
+        parameters.addValue("id", dataCollection.getId());
+        parameters.addValue("updated_on", dataCollection.getUpdatedOn());
         return jdbcTemplate.update(sql, parameters);
     }
 
     @Override
-    public DataCollectionDto findById(Integer id) {
-        String sql = "SELECT id, " +
-                "created_on, " +
-                "updated_on, " +
-                "file_id_orders, " +
-                "file_id_assets, " +
-                "file_id_inventory, " +
-                "status, " +
-                "tag, " +
-                "note " +
-                "FROM eii_test.data_collections " +
-                "WHERE id = :id AND status != 'DELETED'";
+    public DataCollection findById(Integer id) {
+        String sql = "SELECT dc.*, " +
+                "df1.id                as order_file_id, " +
+                "df1.created_on        as order_created_on, " +
+                "df1.updated_on        as order_updated_on, " +
+                "df1.file_type         as order_file_type, " +
+                "df1.validation_status as order_file_status, " +
+                "df2.id                as asset_file_id, " +
+                "df2.created_on        as asset_created_on, " +
+                "df2.updated_on        as asset_updated_on, " +
+                "df2.file_type         as asset_file_type, " +
+                "df2.validation_status as asset_file_status, " +
+                "df3.id                as inventory_file_id, " +
+                "df3.created_on        as inventory_created_on, " +
+                "df3.updated_on        as inventory_updated_on, " +
+                "df3.file_type         as inventory_file_type, " +
+                "df3.validation_status as inventory_file_status " +
+                "FROM eii_test.data_collections dc " +
+                "LEFT JOIN eii_test.data_files df1 ON dc.file_id_orders = df1.id " +
+                "LEFT JOIN eii_test.data_files df2 ON dc.file_id_assets = df2.id " +
+                "LEFT JOIN eii_test.data_files df3 ON dc.file_id_inventory = df3.id " +
+                "WHERE dc.status != 'DELETED' AND dc.id = :id";
 
         MapSqlParameterSource parameters = new MapSqlParameterSource("id", id);
 
@@ -80,18 +87,28 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
     }
 
     @Override
-    public List<DataCollectionDto> findAll(Map<String, String> params) {
-        String sql = "SELECT id, " +
-                "created_on, " +
-                "updated_on, " +
-                "file_id_orders, " +
-                "file_id_assets, " +
-                "file_id_inventory, " +
-                "status, " +
-                "tag, " +
-                "note " +
-                "FROM eii_test.data_collections " +
-                "WHERE status != 'DELETED'";
+    public List<DataCollection> findAll(Map<String, String> params) {
+        String sql = "SELECT dc.*, " +
+                    "df1.id                as order_file_id, " +
+                    "df1.created_on        as order_created_on, " +
+                    "df1.updated_on        as order_updated_on, " +
+                    "df1.file_type         as order_file_type, " +
+                    "df1.validation_status as order_file_status, " +
+                    "df2.id                as asset_file_id, " +
+                    "df2.created_on        as asset_created_on, " +
+                    "df2.updated_on        as asset_updated_on, " +
+                    "df2.file_type         as asset_file_type, " +
+                    "df2.validation_status as asset_file_status, " +
+                    "df3.id                as inventory_file_id, " +
+                    "df3.created_on        as inventory_created_on, " +
+                    "df3.updated_on        as inventory_updated_on, " +
+                    "df3.file_type         as inventory_file_type, " +
+                    "df3.validation_status as inventory_file_status " +
+         "FROM eii_test.data_collections dc " +
+         "LEFT JOIN eii_test.data_files df1 ON dc.file_id_orders = df1.id " +
+         "LEFT JOIN eii_test.data_files df2 ON dc.file_id_assets = df2.id " +
+         "LEFT JOIN eii_test.data_files df3 ON dc.file_id_inventory = df3.id " +
+         "WHERE dc.status != 'DELETED'";
 
         if (params.containsKey("filter")) {
             String[] filterParts = params.get("filter").split(",");
@@ -104,7 +121,16 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
             String[] sortParts = params.get("sort").split(",");
             sql += "ORDER BY " + sortParts[0].split(":")[1] + " " + sortParts[1].split(":")[1];
         }
+        return jdbcTemplate.query(sql, dataCollectionRowMapper);
+    }
 
-        return jdbcTemplate.query(sql, new MapSqlParameterSource(), dataCollectionRowMapper);
+    private void putFileIdParameters(List<DataFile> dataFiles, MapSqlParameterSource parameters) {
+        for (DataFile dataFile : dataFiles) {
+            switch (dataFile.getType()) {
+                case "orders" -> parameters.addValue("file_id_orders", dataFile.getId());
+                case "assets" -> parameters.addValue("file_id_assets", dataFile.getId());
+                case "inventory" -> parameters.addValue("file_id_inventory", dataFile.getId());
+            }
+        }
     }
 }

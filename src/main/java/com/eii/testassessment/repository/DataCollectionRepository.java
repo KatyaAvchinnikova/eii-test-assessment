@@ -1,17 +1,18 @@
 package com.eii.testassessment.repository;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
-import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.dto.DataCollectionRequestDto;
+import com.eii.testassessment.model.DataCollection;
+import com.eii.testassessment.model.DataFile;
 
 import java.util.List;
 import java.util.Map;
 
 public interface DataCollectionRepository {
-    int save(DataCollectionCreateDto dataCollectionDto);
+    int save(DataCollectionRequestDto dataCollectionDto, List<DataFile> dataFiles);
 
-    int update(DataCollectionDto dataCollectionDto);
+    int update(DataCollection dataCollection);
 
-    DataCollectionDto findById(Integer id);
+    DataCollection findById(Integer id);
 
-    List<DataCollectionDto> findAll(Map<String, String> params);
+    List<DataCollection> findAll(Map<String, String> params);
 }

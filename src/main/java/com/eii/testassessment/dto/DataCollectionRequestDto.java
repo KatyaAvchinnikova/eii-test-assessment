@@ -5,12 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class DataFileValidationDto {
-    private long id;
+public class DataCollectionRequestDto {
+    List<Integer> dataFileIds;
     private String status;
-    private String type;
+    private String tag;
+    private String note;
 }

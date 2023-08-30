@@ -1,10 +1,8 @@
 package com.eii.testassessment.controller;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
-import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.dto.DataCollectionRequestDto;
+import com.eii.testassessment.dto.DataCollectionResponseDto;
 import com.eii.testassessment.service.DataCollectionService;
-import com.eii.testassessment.service.DataFileService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,19 +18,17 @@ import java.util.Map;
 @Slf4j
 public class DataCollectionController {
     private final DataCollectionService dataCollectionService;
-    private final DataFileService dataFileService;
 
     @PostMapping()
-    public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionCreateDto dataCollectionCreateDto) {
-        dataFileService.validateDataFiles(dataCollectionCreateDto);
-        dataCollectionService.save(dataCollectionCreateDto);
+    public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionRequestDto dataCollectionRequestDto) {
+        dataCollectionService.save(dataCollectionRequestDto);
         log.info("Data collection was created successfully");
         return new ResponseEntity<>("Data collection was created successfully.", HttpStatus.CREATED);
     }
 
     @GetMapping()
-    public ResponseEntity<List<DataCollectionDto>> getDataCollections(@RequestParam(required = false) Map<String, String> params) throws JsonProcessingException {
-        List<DataCollectionDto> dataCollections = dataCollectionService.findAll(params);
+    public ResponseEntity<List<DataCollectionResponseDto>> getDataCollections(@RequestParam(required = false) Map<String, String> params) {
+        List<DataCollectionResponseDto> dataCollections = dataCollectionService.findAll(params);
 
         if (dataCollections.size() != 0) {
             log.info("Data collections found, sending response with status OK.");
@@ -44,14 +40,13 @@ public class DataCollectionController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DataCollectionDto> getDataCollectionById(@PathVariable Integer id) {
-        DataCollectionDto dataCollections = dataCollectionService.findById(id);
+    public ResponseEntity<DataCollectionResponseDto> getDataCollectionById(@PathVariable Integer id) {
+        DataCollectionResponseDto dataCollections = dataCollectionService.findById(id);
         return new ResponseEntity<>(dataCollections, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDataCollection(@PathVariable("id") int id, @RequestBody DataCollectionCreateDto dataCollectionDto) {
-        dataFileService.validateDataFiles(dataCollectionDto);
+    public ResponseEntity<String> updateDataCollection(@PathVariable("id") int id, @RequestBody DataCollectionRequestDto dataCollectionDto) {
         dataCollectionService.update(id, dataCollectionDto);
         return new ResponseEntity<>("Data collection was updated successfully.", HttpStatus.OK);
     }

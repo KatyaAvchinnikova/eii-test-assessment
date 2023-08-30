@@ -1,7 +1,9 @@
 package com.eii.testassessment.service;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
+import com.eii.testassessment.model.DataFile;
+
+import java.util.List;
 
 public interface DataFileService {
-    void validateDataFiles(DataCollectionCreateDto dto);
+    void validateDataFiles(List<DataFile> dataFiles);
 }

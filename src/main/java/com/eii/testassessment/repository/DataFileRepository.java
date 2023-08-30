@@ -1,7 +1,9 @@
 package com.eii.testassessment.repository;
 
-import com.eii.testassessment.dto.DataFileValidationDto;
+import com.eii.testassessment.model.DataFile;
+
+import java.util.List;
 
 public interface DataFileRepository {
-    DataFileValidationDto validateByTypeAndStatus(long id, String type);
+    List<DataFile> findByIds(List<Integer> ids);
 }

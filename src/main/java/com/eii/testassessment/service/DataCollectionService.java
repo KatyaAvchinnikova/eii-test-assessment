@@ -1,19 +1,19 @@
 package com.eii.testassessment.service;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
-import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.dto.DataCollectionRequestDto;
+import com.eii.testassessment.dto.DataCollectionResponseDto;
 
 import java.util.List;
 import java.util.Map;
 
 public interface DataCollectionService {
-    int save(DataCollectionCreateDto dataCollectionCreateDto);
+    int save(DataCollectionRequestDto dataCollectionRequestDto);
 
-    List<DataCollectionDto> findAll(Map<String, String> params);
+    List<DataCollectionResponseDto> findAll(Map<String, String> params);
 
-    DataCollectionDto findById(Integer id);
+    DataCollectionResponseDto findById(Integer id);
 
-    void update(int id, DataCollectionCreateDto dataCollectionDto);
+    void update(int id, DataCollectionRequestDto dataCollectionDto);
 
     void deleteById(int id);
 }
