@@ -1,6 +1,6 @@
 package com.eii.testassessment.controller;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
+import com.eii.testassessment.dto.DataCollectionRequestDto;
 import com.eii.testassessment.model.DataCollection;
 import com.eii.testassessment.service.DataCollectionService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ public class DataCollectionController {
     private final DataCollectionService dataCollectionService;
 
     @PostMapping()
-    public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionCreateDto dataCollectionCreateDto) {
-        dataCollectionService.save(dataCollectionCreateDto);
+    public ResponseEntity<String> saveDataCollection(@RequestBody DataCollectionRequestDto dataCollectionRequestDto) {
+        dataCollectionService.save(dataCollectionRequestDto);
         log.info("Data collection was created successfully");
         return new ResponseEntity<>("Data collection was created successfully.", HttpStatus.CREATED);
     }
@@ -46,8 +46,7 @@ public class DataCollectionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updateDataCollection(@PathVariable("id") int id, @RequestBody DataCollectionCreateDto dataCollectionDto) {
-        // dataFileService.validateDataFiles(dataCollectionDto);
+    public ResponseEntity<String> updateDataCollection(@PathVariable("id") int id, @RequestBody DataCollectionRequestDto dataCollectionDto) {
         dataCollectionService.update(id, dataCollectionDto);
         return new ResponseEntity<>("Data collection was updated successfully.", HttpStatus.OK);
     }

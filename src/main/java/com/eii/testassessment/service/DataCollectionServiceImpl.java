@@ -1,6 +1,7 @@
 package com.eii.testassessment.service;
 
-import com.eii.testassessment.dto.DataCollectionCreateDto;
+import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.dto.DataCollectionRequestDto;
 import com.eii.testassessment.model.DataCollection;
 import com.eii.testassessment.model.DataFile;
 import com.eii.testassessment.repository.DataCollectionRepository;
@@ -23,10 +24,10 @@ public class DataCollectionServiceImpl implements DataCollectionService {
 
     @Override
     @Transactional
-    public int save(DataCollectionCreateDto dataCollectionCreateDto) {
-        List<DataFile> dataFiles = dataFileRepository.findByIds(dataCollectionCreateDto.getDataFileIds());
+    public int save(DataCollectionRequestDto dataCollectionRequestDto) {
+        List<DataFile> dataFiles = dataFileRepository.findByIds(dataCollectionRequestDto.getDataFileIds());
         dataFileService.validateDataFiles(dataFiles);
-        return dataCollectionRepository.save(dataCollectionCreateDto, dataFiles);
+        return dataCollectionRepository.save(dataCollectionRequestDto, dataFiles);
     }
 
     @Override
@@ -43,8 +44,10 @@ public class DataCollectionServiceImpl implements DataCollectionService {
 
     @Override
     @Transactional
-    public void update(int id, DataCollectionCreateDto dataCollectionDto) {
-        DataCollection dto = buildDataCollectionDto(id, dataCollectionDto);
+    public void update(int id, DataCollectionRequestDto dataCollectionDto) {
+        List<DataFile> dataFiles = dataFileRepository.findByIds(dataCollectionDto.getDataFileIds());
+        dataFileService.validateDataFiles(dataFiles);
+        DataCollection dto = buildDataCollectionDto(id, dataCollectionDto, dataFiles);
         dataCollectionRepository.update(dto);
     }
 
@@ -56,15 +59,14 @@ public class DataCollectionServiceImpl implements DataCollectionService {
         dataCollectionRepository.update(dto);
     }
 
-    private DataCollection buildDataCollectionDto(int id, DataCollectionCreateDto dataCollectionDto) {
+    private DataCollection buildDataCollectionDto(int id, DataCollectionRequestDto dataCollectionDto, List<DataFile> dataFiles) {
         DataCollection dto = dataCollectionRepository.findById(id);
-//        dto.setFileIdAssets(dataCollectionDto.getFileIdAssets());
-//        dto.setFileIdInventory(dataCollectionDto.getFileIdInventory());
-//        dto.setFileIdOrders(dataCollectionDto.getFileIdOrders());
+        dto.setDataFileList(dataFiles);
         dto.setNote(dataCollectionDto.getNote());
         dto.setTag(dataCollectionDto.getTag());
         dto.setStatus(dataCollectionDto.getStatus());
         dto.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
+
         return dto;
     }
 }

@@ -11,8 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class DataCollectionCreateDto {
-    List<Integer> dataFileIds;
+public class DataCollectionDto {
+    private int fileIdOrders;
+    private int fileIdAssets;
+    private int fileIdInventory;
     private String status;
     private String tag;
     private String note;
