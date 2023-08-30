@@ -24,18 +24,33 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<DataCollectionDto> findAll(Map<String, String> params) {
         return dataCollectionRepository.findAll(params);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public DataCollectionDto findById(Integer id) {
         return dataCollectionRepository.findById(id);
     }
 
     @Override
+    @Transactional
     public void update(int id, DataCollectionCreateDto dataCollectionDto) {
+        DataCollectionDto dto = buildDataCollectionDto(id, dataCollectionDto);
+        dataCollectionRepository.update(dto);
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(int id) {
+        DataCollectionDto dto = dataCollectionRepository.findById(id);
+        dto.setStatus("DELETED");
+        dataCollectionRepository.update(dto);
+    }
+
+    private DataCollectionDto buildDataCollectionDto(int id, DataCollectionCreateDto dataCollectionDto) {
         DataCollectionDto dto = dataCollectionRepository.findById(id);
         dto.setFileIdAssets(dataCollectionDto.getFileIdAssets());
         dto.setFileIdInventory(dataCollectionDto.getFileIdInventory());
@@ -44,13 +59,6 @@ public class DataCollectionServiceImpl implements DataCollectionService {
         dto.setTag(dataCollectionDto.getTag());
         dto.setStatus(dataCollectionDto.getStatus());
         dto.setUpdatedOn(Timestamp.valueOf(LocalDateTime.now()));
-        dataCollectionRepository.update(dto);
-    }
-
-    @Override
-    public void deleteById(int id) {
-        DataCollectionDto dto = dataCollectionRepository.findById(id);
-        dto.setStatus("DELETED");
-        dataCollectionRepository.update(dto);
+        return dto;
     }
 }
