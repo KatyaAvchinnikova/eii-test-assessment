@@ -1,7 +1,7 @@
 package com.eii.testassessment.repository;
 
-import com.eii.testassessment.dto.DataFileValidationDto;
-import com.eii.testassessment.mapper.DataFileValidationRowMapper;
+import com.eii.testassessment.mapper.DataFileRowMapper;
+import com.eii.testassessment.model.DataFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -13,15 +13,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class JdbcDataFileRepository implements DataFileRepository {
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final DataFileValidationRowMapper validationRowMapper;
+    private final DataFileRowMapper dataFileRowMapper;
 
     @Override
-    public List<DataFileValidationDto> findByIds(List<Long> ids) {
-        String sql = "SELECT id, validation_status, file_type " +
+    public List<DataFile> findByIds(List<Integer> ids) {
+        String sql = "SELECT id, validation_status, file_type, created_on, updated_on " +
                 "FROM eii_test.data_files " +
-                "WHERE id in :ids;";
+                "WHERE id in (:ids)";
         MapSqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
 
-        return jdbcTemplate.query(sql, parameters, validationRowMapper);
+        return jdbcTemplate.query(sql, parameters, dataFileRowMapper);
     }
 }

@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class DataCollectionCreateDto {
-    List<DataFileDto> dataFiles;
+    List<Integer> dataFileIds;
     private String status;
     private String tag;
     private String note;

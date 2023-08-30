@@ -1,9 +1,10 @@
 package com.eii.testassessment.repository;
 
 import com.eii.testassessment.dto.DataCollectionCreateDto;
-import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.exception.ResourceNotFoundException;
 import com.eii.testassessment.mapper.DataCollectionRowMapper;
+import com.eii.testassessment.model.DataCollection;
+import com.eii.testassessment.model.DataFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -19,45 +20,52 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
     private final DataCollectionRowMapper dataCollectionRowMapper;
 
     @Override
-    public int save(DataCollectionCreateDto dataCollectionDto) {
+    public int save(DataCollectionCreateDto dataCollectionDto, List<DataFile> dataFiles) {
         String sql = "INSERT INTO eii_test.data_collections (file_id_orders, file_id_assets, file_id_inventory, status, tag, note) " +
                 "VALUES (:file_id_orders, :file_id_asserts, :file_id_inventory, :status, :tag, :note)";
 
-        MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollectionDto.getFileIdOrders());
-        parameters.addValue("file_id_asserts",      dataCollectionDto.getFileIdAssets());
-        parameters.addValue("file_id_inventory",    dataCollectionDto.getFileIdInventory());
-        parameters.addValue("status",               dataCollectionDto.getStatus());
-        parameters.addValue("tag",                  dataCollectionDto.getTag());
-        parameters.addValue("note",                 dataCollectionDto.getTag());
+        MapSqlParameterSource parameters = new MapSqlParameterSource();
+
+        for (DataFile dataFile : dataFiles) {
+            switch (dataFile.getType()) {
+                case "orders" -> parameters.addValue("file_id_orders", dataFile.getId());
+                case "assets" -> parameters.addValue("file_id_asserts", dataFile.getId());
+                case "inventory" -> parameters.addValue("file_id_inventory", dataFile.getId());
+            }
+        }
+
+        parameters.addValue("status", dataCollectionDto.getStatus());
+        parameters.addValue("tag", dataCollectionDto.getTag());
+        parameters.addValue("note", dataCollectionDto.getTag());
 
         return jdbcTemplate.update(sql, parameters);
     }
 
     @Override
-    public int update(DataCollectionDto dataCollectionDto) {
-        String sql = "UPDATE eii_test.data_collections SET file_id_orders = :file_id_orders, " +
-                "file_id_assets = file_id_assets, " +
-                "file_id_inventory=:file_id_inventory, " +
-                "status = :status, " +
-                "tag = :tag, " +
-                "note = :note, " +
-                "updated_on = :updated_on " +
-                "WHERE id=:id";
+    public int update(DataCollection dataCollection) {
+//        String sql = "UPDATE eii_test.data_collections SET file_id_orders = :file_id_orders, " +
+//                "file_id_assets = file_id_assets, " +
+//                "file_id_inventory=:file_id_inventory, " +
+//                "status = :status, " +
+//                "tag = :tag, " +
+//                "note = :note, " +
+//                "updated_on = :updated_on " +
+//                "WHERE id=:id";
+//
+//        MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollection.getFileIdOrders());
+//        parameters.addValue("file_id_asserts", dataCollection.getFileIdAssets());
+//        parameters.addValue("file_id_inventory", dataCollection.getFileIdInventory());
+//        parameters.addValue("status", dataCollection.getStatus());
+//        parameters.addValue("tag", dataCollection.getTag());
+//        parameters.addValue("note", dataCollection.getNote());
+//        parameters.addValue("id", dataCollection.getId());
+//        parameters.addValue("updated_on", dataCollection.getUpdatedOn());
 
-        MapSqlParameterSource parameters = new MapSqlParameterSource("file_id_orders", dataCollectionDto.getFileIdOrders());
-        parameters.addValue("file_id_asserts",      dataCollectionDto.getFileIdAssets());
-        parameters.addValue("file_id_inventory",    dataCollectionDto.getFileIdInventory());
-        parameters.addValue("status",               dataCollectionDto.getStatus());
-        parameters.addValue("tag",                  dataCollectionDto.getTag());
-        parameters.addValue("note",                 dataCollectionDto.getNote());
-        parameters.addValue("id",                   dataCollectionDto.getId());
-        parameters.addValue("updated_on",           dataCollectionDto.getUpdatedOn());
-
-        return jdbcTemplate.update(sql, parameters);
+        return 0;//jdbcTemplate.update(sql, parameters);
     }
 
     @Override
-    public DataCollectionDto findById(Integer id) {
+    public DataCollection findById(Integer id) {
         String sql = "SELECT id, " +
                 "created_on, " +
                 "updated_on, " +
@@ -80,7 +88,7 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
     }
 
     @Override
-    public List<DataCollectionDto> findAll(Map<String, String> params) {
+    public List<DataCollection> findAll(Map<String, String> params) {
         String sql = "SELECT id, " +
                 "created_on, " +
                 "updated_on, " +

@@ -1,4 +1,4 @@
-package com.eii.testassessment.dto;
+package com.eii.testassessment.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,18 +6,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-public class DataCollectionDto {
+public class DataCollection {
     private Integer id;
     private Timestamp createdOn;
     private Timestamp updatedOn;
-    private Integer fileIdOrders;
-    private Integer fileIdAssets;
-    private Integer fileIdInventory;
+    List<DataFile> dataFileList;
     private String status;
     private String tag;
     private String note;

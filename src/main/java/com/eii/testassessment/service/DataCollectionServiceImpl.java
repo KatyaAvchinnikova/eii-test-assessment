@@ -1,8 +1,10 @@
 package com.eii.testassessment.service;
 
 import com.eii.testassessment.dto.DataCollectionCreateDto;
-import com.eii.testassessment.dto.DataCollectionDto;
+import com.eii.testassessment.model.DataCollection;
+import com.eii.testassessment.model.DataFile;
 import com.eii.testassessment.repository.DataCollectionRepository;
+import com.eii.testassessment.repository.DataFileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,45 +18,49 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DataCollectionServiceImpl implements DataCollectionService {
     private final DataCollectionRepository dataCollectionRepository;
+    private final DataFileService dataFileService;
+    private final DataFileRepository dataFileRepository;
 
     @Override
     @Transactional
     public int save(DataCollectionCreateDto dataCollectionCreateDto) {
-        return dataCollectionRepository.save(dataCollectionCreateDto);
+        List<DataFile> dataFiles = dataFileRepository.findByIds(dataCollectionCreateDto.getDataFileIds());
+        dataFileService.validateDataFiles(dataFiles);
+        return dataCollectionRepository.save(dataCollectionCreateDto, dataFiles);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<DataCollectionDto> findAll(Map<String, String> params) {
+    public List<DataCollection> findAll(Map<String, String> params) {
         return dataCollectionRepository.findAll(params);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public DataCollectionDto findById(Integer id) {
+    public DataCollection findById(Integer id) {
         return dataCollectionRepository.findById(id);
     }
 
     @Override
     @Transactional
     public void update(int id, DataCollectionCreateDto dataCollectionDto) {
-        DataCollectionDto dto = buildDataCollectionDto(id, dataCollectionDto);
+        DataCollection dto = buildDataCollectionDto(id, dataCollectionDto);
         dataCollectionRepository.update(dto);
     }
 
     @Override
     @Transactional
     public void deleteById(int id) {
-        DataCollectionDto dto = dataCollectionRepository.findById(id);
+        DataCollection dto = dataCollectionRepository.findById(id);
         dto.setStatus("DELETED");
         dataCollectionRepository.update(dto);
     }
 
-    private DataCollectionDto buildDataCollectionDto(int id, DataCollectionCreateDto dataCollectionDto) {
-        DataCollectionDto dto = dataCollectionRepository.findById(id);
-        dto.setFileIdAssets(dataCollectionDto.getFileIdAssets());
-        dto.setFileIdInventory(dataCollectionDto.getFileIdInventory());
-        dto.setFileIdOrders(dataCollectionDto.getFileIdOrders());
+    private DataCollection buildDataCollectionDto(int id, DataCollectionCreateDto dataCollectionDto) {
+        DataCollection dto = dataCollectionRepository.findById(id);
+//        dto.setFileIdAssets(dataCollectionDto.getFileIdAssets());
+//        dto.setFileIdInventory(dataCollectionDto.getFileIdInventory());
+//        dto.setFileIdOrders(dataCollectionDto.getFileIdOrders());
         dto.setNote(dataCollectionDto.getNote());
         dto.setTag(dataCollectionDto.getTag());
         dto.setStatus(dataCollectionDto.getStatus());
