@@ -1,6 +1,5 @@
 package com.eii.testassessment.service;
 
-import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.dto.DataCollectionRequestDto;
 import com.eii.testassessment.model.DataCollection;
 import com.eii.testassessment.model.DataFile;

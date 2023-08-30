@@ -1,6 +1,5 @@
 package com.eii.testassessment.repository;
 
-import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.dto.DataCollectionRequestDto;
 import com.eii.testassessment.exception.ResourceNotFoundException;
 import com.eii.testassessment.mapper.DataCollectionRowMapper;
