@@ -5,6 +5,7 @@ import com.eii.testassessment.dto.DataCollectionDto;
 import com.eii.testassessment.repository.DataCollectionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -17,11 +18,13 @@ public class DataCollectionServiceImpl implements DataCollectionService {
     private final DataCollectionRepository dataCollectionRepository;
 
     @Override
+    @Transactional
     public int save(DataCollectionCreateDto dataCollectionCreateDto) {
         return dataCollectionRepository.save(dataCollectionCreateDto);
     }
 
     @Override
+    @Transactional
     public List<DataCollectionDto> findAll(Map<String, String> params) {
         return dataCollectionRepository.findAll(params);
     }

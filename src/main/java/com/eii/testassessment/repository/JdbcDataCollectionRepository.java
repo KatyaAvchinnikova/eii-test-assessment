@@ -105,6 +105,6 @@ public class JdbcDataCollectionRepository implements DataCollectionRepository {
             sql += "ORDER BY " + sortParts[0].split(":")[1] + " " + sortParts[1].split(":")[1];
         }
 
-        return jdbcTemplate.query(sql, new MapSqlParameterSource(), dataCollectionRowMapper);
+        return jdbcTemplate.query(sql, dataCollectionRowMapper);
     }
 }

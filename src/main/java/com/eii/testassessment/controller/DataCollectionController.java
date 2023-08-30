@@ -31,7 +31,7 @@ public class DataCollectionController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<DataCollectionDto>> getDataCollections(@RequestParam(required = false) Map<String, String> params) throws JsonProcessingException {
+    public ResponseEntity<List<DataCollectionDto>> getDataCollections(@RequestParam(required = false) Map<String, String> params){
         List<DataCollectionDto> dataCollections = dataCollectionService.findAll(params);
 
         if (dataCollections.size() != 0) {
