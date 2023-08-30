@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class DataFileDto {
-    private Integer id;
+    private Long id;
     private Timestamp createdOn;
     private Timestamp updatedOn;
     private String fileType;

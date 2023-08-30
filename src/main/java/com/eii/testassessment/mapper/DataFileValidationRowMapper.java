@@ -12,8 +12,9 @@ public class DataFileValidationRowMapper implements RowMapper<DataFileValidation
     @Override
     public DataFileValidationDto mapRow(ResultSet rs, int rowNum) throws SQLException {
         DataFileValidationDto dataFileValidationDto = new DataFileValidationDto();
-        dataFileValidationDto.setValidType(rs.getBoolean("is_valid_type"));
-        dataFileValidationDto.setValidStatus(rs.getBoolean("is_valid_status"));
+        dataFileValidationDto.setId(rs.getLong("id"));
+        dataFileValidationDto.setStatus(rs.getString("validation_status"));
+        dataFileValidationDto.setType(rs.getString("file_type"));
 
         return dataFileValidationDto;
     }

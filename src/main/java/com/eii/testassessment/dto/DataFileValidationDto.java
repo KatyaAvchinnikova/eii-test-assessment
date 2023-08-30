@@ -10,6 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DataFileValidationDto {
-    private boolean isValidStatus;
-    private boolean isValidType;
+    private long id;
+    private String status;
+    private String type;
 }
