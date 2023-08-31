@@ -25,29 +25,22 @@ public class DataCollectionRowMapper implements RowMapper<DataCollection> {
         dataCollection.setTag(rs.getString("tag"));
         dataCollection.setNote(rs.getString("note"));
 
-        DataFile orderFile = new DataFile();
-        orderFile.setId(rs.getInt("order_file_id"));
-        orderFile.setCreatedOn(rs.getTimestamp("order_created_on"));
-        orderFile.setUpdatedOn(rs.getTimestamp("order_updated_on"));
-        orderFile.setType(rs.getString("order_file_type"));
-        orderFile.setStatus(rs.getString("order_file_status"));
-
-        DataFile assetFile = new DataFile();
-        assetFile.setId(rs.getInt("asset_file_id"));
-        assetFile.setCreatedOn(rs.getTimestamp("asset_created_on"));
-        assetFile.setUpdatedOn(rs.getTimestamp("asset_updated_on"));
-        assetFile.setType(rs.getString("asset_file_type"));
-        assetFile.setStatus(rs.getString("asset_file_status"));
-
-        DataFile inventoryFile = new DataFile();
-        inventoryFile.setId(rs.getInt("inventory_file_id"));
-        inventoryFile.setCreatedOn(rs.getTimestamp("inventory_created_on"));
-        inventoryFile.setUpdatedOn(rs.getTimestamp("inventory_updated_on"));
-        inventoryFile.setType(rs.getString("inventory_file_type"));
-        inventoryFile.setStatus(rs.getString("inventory_file_status"));
+        DataFile orderFile = mapToDataFile(rs, "order_file_");
+        DataFile assetFile = mapToDataFile(rs, "asset_file_");
+        DataFile inventoryFile = mapToDataFile(rs, "inventory_file_");
 
         dataCollection.setDataFileList(Arrays.asList(orderFile, assetFile, inventoryFile));
 
         return dataCollection;
+    }
+
+    private DataFile mapToDataFile(ResultSet rs, String prefix) throws SQLException {
+        DataFile dataFile = new DataFile();
+        dataFile.setId(rs.getInt(prefix + "id"));
+        dataFile.setCreatedOn(rs.getTimestamp(prefix + "created_on"));
+        dataFile.setUpdatedOn(rs.getTimestamp(prefix + "updated_on"));
+        dataFile.setType(rs.getString(prefix + "type"));
+        dataFile.setStatus(rs.getString(prefix + "status"));
+        return dataFile;
     }
 }
